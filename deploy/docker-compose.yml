@@ -1,0 +1,35 @@
+# Start:            docker compose -f deploy/docker-compose.yml up -d --build
+# With HTTPS/WSS:   DOMAIN=docs.example.com docker compose -f deploy/docker-compose.yml --profile tls up -d --build
+# The file ../.env must exist (copy .env.example and set TOKEN_SECRET).
+services:
+  server:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    env_file: ../.env
+    environment:
+      NODE_ENV: production
+      DB_PATH: /data/ds04.sqlite
+    ports:
+      - "3000:3000"
+    volumes:
+      - ds04-data:/data
+    restart: unless-stopped
+
+  # Optional TLS front end. Caddy gets a certificate for $DOMAIN and forwards HTTPS + WSS to the server.
+  caddy:
+    image: caddy:2.10-alpine
+    profiles: ["tls"]
+    command: caddy reverse-proxy --from ${DOMAIN:-localhost} --to server:3000
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - caddy-data:/data
+    depends_on:
+      - server
+    restart: unless-stopped
+
+volumes:
+  ds04-data:
+  caddy-data:
