@@ -1,0 +1,20 @@
+{
+  "name": "ds04-collab-docs",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "DS04 - Collaborative document editing (Google Docs simulation) with a hand-written RGA CRDT",
+  "scripts": {
+    "start": "bun src/server/main.ts",
+    "dev": "bun --hot src/server/main.ts",
+    "cli": "bun src/client/cli.ts",
+    "seed": "bun scripts/seed.ts",
+    "bench": "bun scripts/bench.ts",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/bun": "1.3.6",
+    "typescript": "5.9.3"
+  }
+}
